@@ -1,0 +1,30 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if title %}
+    <h2>{{title}}</h2>
+    {% else %}
+    <h2>Active Listings</h2>
+    {% endif %}
+    <div class="container" style="margin-left: 0px; max-width: 100%;">
+    {% for item in listings %}
+        <div class="row my-5" style="border: 2px solid #d2d2d2;">
+          <div class="col" style="display: flex; justify-content: center; margin: auto;">
+            <img src="{{item.img_url}}" alt="No Image Attached" style="width: auto; height: 15rem;">
+          </div>
+          <div class="col" style="margin-right: 1em; padding: 10px;">
+            <h5 class="title" style="font-style: italic; font-size: 2rem;">{{item.it_name}} <span class="text-white bg-dark" style="font-size: 15px; padding: 4px;">{{ item.category }}</span></h5>
+            <p class="text">Seller - <span class="bg-info text-white" style="padding: 4px;">{{item.it_seller}}</span></p>
+            <p class="text">{{item.it_desc}}</p>
+            <p class="text my-2" style="font-weight: bold;">Starting Bid: <span style="font-weight: lighter;">${{item.starting_bid}}</span></p>
+            {% if item.starting_bid <= item.current_bid %}
+              <p class="text my-2" style="font-weight: bold;">Current Bid: <span style="font-weight: lighter;">${{item.current_bid}}</span></p>
+            {% endif %}
+              <a href="{% url 'listing' item.id %}" class="btn btn-primary">More Info</a>
+          </div>
+        </div>
+      
+    {% endfor %}
+    </div>
+        
+{% endblock %}

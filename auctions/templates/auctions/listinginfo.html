@@ -1,0 +1,99 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if alert %}
+      <div class="alert alert-danger">Please enter a bid higher than the current bid value</div>
+    {% endif %}
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-4"><img class="card-img-top mx-2" style="width: auto; height: 275px; float: left;" src="{{listing.img_url}}" alt=""></div>
+        <div class="col-8">
+          <h2>{{listing.it_name}} <span class="text-white bg-dark" style="font-size: 15px; padding: 4px;">{{ listing.category }}</span> </h2>
+    
+          <div class="card pb-2" style="background-color: rgb(177, 177, 177);">
+            <span class="pl-3 mt-2">Starting Bid :<span style="font-weight: bold; font-size: 30px;">${{listing.starting_bid}}</span></span>
+            {% if listing.starting_bid <= listing.current_bid %}
+              <span class="pl-3 mt-2">Current Bid :<span style="font-weight: bold; font-size: 30px;">${{listing.current_bid}}</span></span>
+              {% if listing.bid_winner %}
+                {% if listing.active %}
+                  <span class="pl-3 mt-2">Highest bidder - <span class="bg-success">{{listing.bid_winner}}</span></span>
+                {% else %}
+                  <span class="pl-3 mt-2">Winning bidder - <span class="bg-success">{{listing.bid_winner}}</span></span>
+                {% endif %}
+              {% endif %}      
+                
+            {% endif %}
+            
+            {% if watchinguser == listing.it_seller and listing.active %}
+              <form action="{% url 'close_bid' listing.id %}" method="POST" class="pl-3 mt-2">
+                {% csrf_token %}
+                <button type="submit" name="form" class="btn btn-danger">Close Bid</button>
+              </form>
+            {% else %}
+              {% if listing.active %}
+                {% if user.is_authenticated and watching == False %}
+                  <form class="pl-3 mt-2" action="{% url 'make_bid' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <button type="submit" name="form" class="btn btn-primary">Place Bid</button>
+                  </form>
+                  <a class="btn btn-secondary my-3" style="width: 43%; position: relative; left: 230px;" href="{% url 'addWlist' listing.id %}">Add to Watchlist</a>
+                {% elif user.is_authenticated and watching == True %}
+                  <form class="pl-3 mt-2" action="{% url 'make_bid' listing.id %}" method="POST">
+                    {% csrf_token %}
+                    {{form}}
+                    <button type="submit" name="form" class="btn btn-primary">Place Bid</button>
+                  </form>
+                  <a class="btn btn-secondary my-3" style="width: 43%; position: relative; left: 230px;" href="{% url 'remWlist' listing.id %}">Remove from Watchlist</a>
+                {% else %}
+                  <div class="alert alert-info my-3 mx-3">Please log-in to place bids!</div>
+                  <div class="container my-3"></div>
+                {% endif %}
+              {% else %}
+                  {% if watchinguser == listing.bid_winner %}
+                    <div class="alert alert-success m-3">Congratulations! You have won this auction!</div>
+                  {% else %}
+                    <span class="pl-3 mt-2 text-danger">This bid has been closed!</span>
+                  {% endif %}
+              {% endif %}
+            {% endif %}
+        </div>
+        </div>   
+      </div>   
+    </div>
+    <div class="container">
+      <h5 class="pt-3 pl-3" style="text-decoration: underline;">Description:</h5>
+        <p class="card-text pb-3 pl-3 mb-2">{{listing.it_desc}}</p>
+    </div>
+
+    <div class="container">
+      <form action="{% url 'make_comment' listing.id %}" method="POST">
+        {% csrf_token %}
+        <h3>Write a comment</h3>
+        {{ form2 }}
+        <p align="right"><button type="submit" name="form2" class="btn btn-primary">Comment</button></p>
+      </form>
+    </div>
+
+    <div class="container">
+      {% if comments %}
+        {% for comment in comments %}
+          <div class="card pt-3 mt-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="user flex-row align-items-center">
+                <span>
+                  <small class="font-weight-bold text-primary">{{comment.user}}</small>
+                  <small class="font-weight-bold">{{comment.comment}}</small>
+                </span>
+              </div>
+              <small>{{comment.posting_time}}</small>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+          <h5>No Comments</h5>
+      {% endif %}
+    </div>
+
+{% endblock %}

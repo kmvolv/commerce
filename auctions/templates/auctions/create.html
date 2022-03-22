@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2> New Item </h2>
+
+    <div class="container">
+        <form action="{% url 'submit' %}" method = "POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="it_name">Item Name :</label>
+                <input type="text" class="form-control" name="it_name" placeholder="Enter the name of item" required />
+            </div>
+            <div class="form-group">
+                <label for="it_desc">Item Description :</label>
+                <textarea name="it_desc" type="description" class="form-control" placeholder="Enter a brief description of item" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="category">Category :</label>
+                <select name="category" class="form-control" placeholder="Select">
+                    <option>Consumer Electronics</option>
+                    <option>Fashion</option>
+                    <option>Home Furnishings</option>
+                    <option>Misc</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="price">Starting Bid :</label>
+                <input type="price" class="form_control" name="starting_bid" placeholder = "Enter Starting Price" required>
+            </div>
+            <div class="form-group">
+                <label for="img_url">Image URL :</label>
+                <input type="image_url" class="form-control" name="img_url" placeholder="for ex : https://google.com/example.jpg">
+            </div>
+            <button type="submit" name="form" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}

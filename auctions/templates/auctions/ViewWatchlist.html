@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if WatchList %}
+        {% for chk in WatchList %}
+            {% for item in Listings %}
+                {% if item.id == chk.list_id %}
+                    <div class="card" style="width: 18rem;">
+                    <img src="{{item.img_url}}" alt="No Image Attached" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{item.it_name}}</h5>
+                        <p class="card-text my-2" style="font-weight: bold;"><span style="font-weight: lighter;">Starting Bid - </span>${{item.starting_bid}}</p>
+                        {% if item.starting_bid <= item.current_bid %}
+                            <p class="card-text my-2" style="font-weight: bold;"><span style="font-weight: lighter;">Current Bid - </span>${{item.current_bid}}</p>
+                        {% endif %}
+                        <a href="{% url 'listing' item.id %}" class="btn btn-primary">More Info</a>
+                    </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% else %}
+        <p class="alert alert-danger">You have no items in your wishlist!</p>
+    {% endif%}
+{% endblock %}
